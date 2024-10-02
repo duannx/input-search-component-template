@@ -1,0 +1,33 @@
+.search-result {
+    width: 100%;
+    position: relative;
+    border-radius: 4px;
+    min-height: 100px;
+    border: solid 1px #ddd;
+    margin-top: 4px;
+}
+.item {
+    padding: 1em 2em;
+}
+
+.item:hover {
+    background-color: #eee;
+    cursor: pointer;
+}
+
+.lists {
+    display: flex;
+    flex-direction: column;
+}
+
+.no-result {
+    font-style: italic;
+    color: #333;
+    text-align: center;
+}
+
+.error-message {
+    color: red;
+    font-style: italic;
+    padding: .5em 1em;
+}
