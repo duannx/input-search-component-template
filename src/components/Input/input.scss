@@ -1,6 +1,33 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
-html{
-    font-size: 16px;
+html {
+  font-size: 16px;
+}
+
+.dropdown {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 5px;
+  height: fit-content;
+  max-height: 300px;
+  overflow-y: auto;
+  &.loading {
+    min-height: 80px;
+  }
+}
+
+.dropdown-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}
+
+.dropdown-error {
+  cursor: not-allowed;
 }
