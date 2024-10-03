@@ -24,6 +24,6 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     placeholder: "Type something to search...",
-    onSelectItem: fn()
+    onSelectItem: (item: string) => console.log(item)
   },
 };
