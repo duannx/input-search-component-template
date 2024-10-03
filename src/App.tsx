@@ -6,7 +6,8 @@ function App() {
     <>
       <Input
         placeholder="Type something to search..."
-        onSelectItem={(item: string) => {}}
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        onSelectItem={(_item: string) => {}}
       />
     </>
   );
