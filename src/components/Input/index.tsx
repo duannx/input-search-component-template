@@ -23,7 +23,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
   const [results, setResults] = useState<string[]>();
   const [errorMsg, setErrorMsg] = useState<string>('');
 
-  const onChangeInput = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeInput = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setErrorMsg('')
     setInputValue(newValue)
@@ -77,7 +77,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
     <input
       className="input"
       placeholder={placeholder}
-      onChange={onChangeInput}
+      onChange={handleChangeInput}
     />
     {!!inputValue &&
       <div className="search-result">
