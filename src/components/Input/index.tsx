@@ -37,7 +37,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
           setLoading(false);
         });
     }
-  }, 500);
+  }, 100);
 
   const renderResult = () => {
     if (search !== "") {
