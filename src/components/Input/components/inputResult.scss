@@ -41,6 +41,10 @@ $block: "search-result";
     font-style: italic;
     text-align: center;
     cursor: default;
+
+    &:hover {
+      background-color: unset;
+    }
   }
 
   &__item-loading {
