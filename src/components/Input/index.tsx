@@ -25,7 +25,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
     if(!searchText) {
       return ;
     }
-    let ignore = true
+    let ignore = false;
     setIsLoading(true);
     setErrorMessage("");
     fetchData(searchText)
@@ -45,13 +45,12 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
         }
       });
     return () => {
-      ignore = false
+      ignore = true;
     }
   }, [searchText])
 
   const onChangeInput = debounce((event: ChangeEvent) => {
-    const { value } = event.target as HTMLInputElement;
-    setSearchText(value)
+    setSearchText((event.target as HTMLInputElement).value)
   }, DEBOUNCE_TIME);
 
   const renderSearchResult = () => {
