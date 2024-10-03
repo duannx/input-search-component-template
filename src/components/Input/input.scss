@@ -4,3 +4,33 @@
 html{
     font-size: 16px;
 }
+.main {
+    height: 400px;
+    width: 100%;
+}
+input {
+    width: 100%;
+    padding: 6px 12px;
+    border: 1px solid grey;
+    border-radius: 4px;
+    color: black;
+}
+.error {
+    padding: 8px;
+    color: red;
+}
+.list {
+    display: grid;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+}
+.item {
+    padding: 4px;
+    border-bottom: 1px solid grey;
+    color: black;
+}
+.no-results {
+    text-align: center;
+    color: grey;
+}
