@@ -4,3 +4,36 @@
 html{
     font-size: 16px;
 }
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-clip: padding-box;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.list-component {
+    ul {
+      list-style: none;
+      padding: 0;
+      
+      li {
+        cursor: pointer;
+        padding: 8px 16px;
+        border-bottom: 1px solid #ccc;
+  
+        &:hover {
+          background-color: #f8f9fa;
+        }
+      }
+    }
+  }
