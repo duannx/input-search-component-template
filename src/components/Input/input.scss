@@ -1,6 +1,78 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
-html{
-    font-size: 16px;
+html {
+  font-size: 16px;
+}
+
+@mixin text-styles {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  color: #03183f;
+}
+@mixin header-styles {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  color: #03183f;
+}
+
+.container {
+  position: relative;
+  @include text-styles;
+}
+
+.input {
+  width: 500px;
+  height: 50px;
+  padding: 16px 24px;
+  border-radius: 5px;
+  color: #03183f;
+  border-color: #03183f6b;
+
+  font: 'Roboto', sans-serif;
+}
+
+.list-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  margin-top: 8px;
+  border-radius: 5px;
+  border: 1px solid #03183f6b;
+
+  padding: 16px 0;
+  width: 100%;
+  min-height: 150px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.list {
+  @include text-styles;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.item {
+  line-height: 1.6;
+  padding: 4px 24px;
+  &:hover {
+    background-color: rgb(158, 156, 156);
+    color: white;
+    cursor: pointer;
+  }
+}
+
+.no-result {
+  @include header-styles;
+  text-align: center;
+  padding: 4px 24px;
+}
+
+.error {
+  @include text-styles;
+  color: #c92c25;
+  padding: 4px 24px;
 }
