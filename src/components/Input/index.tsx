@@ -70,12 +70,13 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
   }
 
   return (
-    <div className="input-search-container">
+    <form className="form">
       <input
         placeholder={placeholder}
         type="text"
         value={searchQuery}
         onChange={handleSearch}
+        className="form__field"
       />
 
       {searchQuery && (
@@ -98,7 +99,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
           </div>
         </div>
       )}
-    </div>
+    </form>
   )
   // Your code ends here
 }

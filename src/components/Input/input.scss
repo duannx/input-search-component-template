@@ -1,10 +1,15 @@
-.input-search-container {
+//** variables
+$input-text-color: #a3a3a3;
+
+.form {
 	position: relative;
-	input {
-		border-radius: 4px;
-		line-height: 1.5em;
-		font-size: 16px;
-		padding: .5em 1em;
-		width: 100%
+	&__field {
+		width: 360px;
+		background: #fff;
+		font: inherit;
+		border: 1px solid $input-text-color;
+		box-shadow: 0 6px 10px 0 rgba(0, 0, 0, .1);
+		outline: 0;
+		padding: 22px 18px;
 	}
 }
