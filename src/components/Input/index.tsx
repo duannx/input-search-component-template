@@ -2,6 +2,7 @@ import "./input.scss";
 import { fetchData } from "../../utils/fetch-data";
 import { debounce } from "../../utils/deboucne";
 import { ChangeEvent, useCallback, useRef, useState } from "react";
+import { FETCHING_STATUS } from "../../utils/constants";
 
 export interface InputProps {
   /** Placeholder of the input */
@@ -10,73 +11,99 @@ export interface InputProps {
   onSelectItem: (item: string) => void;
 }
 
-const SearchResultList: React.FC<{list: string[], isLoading?: boolean, isError: boolean, onSelectItem: (item: string) => void}> = ({list, isLoading, isError, onSelectItem}) => {    
-  if (isLoading) {
+const SearchResultList: React.FC<{
+  list: string[],
+  status: string | null,
+  onSelectItem: (item: string) => void}> = ({
+    list,
+    status,
+    onSelectItem
+  }) => {
+  if (status === FETCHING_STATUS.FETCHING) {
     return <p>Loading...</p>;
   }
 
-  if (isError) {
+  if (status === FETCHING_STATUS.ERROR) {
     return <p>Occur an error.</p>
   }
 
-  if (!list.length) {
+  if (!list.length && status !== FETCHING_STATUS.INITIAL) {
     return <p>No results.</p>
   }
 
-  return <ul className="search-input--list">
+  if (list.length) {
+    return <ul className="search-input--list">
     {
       list.map((item:string) => <li key={item}>
         <div className="search-input--list--item" onClick={() => onSelectItem(item)} role="presentation">{item}</div>
       </li>)
     }
   </ul>
+  }
+
+  return null;
 }
 
 const Input = ({ placeholder, onSelectItem }: InputProps) => {
   // DO NOT remove this log
   console.log('input re-render');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [list, setList] = useState<string[]>([]);
-  const latestRequestRef  = useRef<number>(0);
-
   // Your code start here
-  const _onChangeFnc = async (e:ChangeEvent<HTMLInputElement>) => {
+  const [status, setStatus] = useState<string | null>(FETCHING_STATUS.INITIAL);
+  const [list, setList] = useState<string[]>([]);
+  const inputRef = useRef<HTMLInputElement>();
+  const fetchDataPromise = useRef<Promise<unknown[]>>();
+
+  const _onChangeFnc = (e:ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 
-    setIsLoading(true);
-    setIsError(false);
-
+    // Return when there is empty value.
     if(!value.trim()) {
-      if (!list.length) {
-        setList([]);
-      }
-
-      if (isLoading) {
-        setIsLoading(false);
-      }
-
-      if (isError) {
-        setIsError(false);
-      }
+      setList([]);
+      setStatus(FETCHING_STATUS.INITIAL);
 
       return;
     }
 
-    const currentFetchId = ++latestRequestRef.current;
+    inputRef.current = value;
+    fetchDataPromise.current = undefined;
 
-    try {
-      const data = await fetchData(value);
-      if (currentFetchId === latestRequestRef.current) {
-        setList(data);
+    setStatus(FETCHING_STATUS.FETCHING);
+    
+    // Fetch API.
+    const _fetchDataPromise = fetchData(value);
+    fetchDataPromise.current = _fetchDataPromise;
+
+    _fetchDataPromise
+    .then((res) => {
+      if (isCheckXhr(_fetchDataPromise)) {
+        setStatus(FETCHING_STATUS.INITIAL);
+        return;
       }
-    } catch {
-      setIsError(true);
-    } finally {
-      if (currentFetchId === latestRequestRef.current) {
-        setIsLoading(false);
+      setList(res);
+      setStatus(FETCHING_STATUS.SUCCESS);      
+    })
+    .catch(() => {      
+      if (isCheckXhr(_fetchDataPromise)) {
+        setStatus(FETCHING_STATUS.INITIAL);
+        return;
       }
-    }
+      setList([]);
+      setStatus(FETCHING_STATUS.ERROR);
+    })
+    .finally(() => {
+      fetchDataPromise.current = undefined;
+    });
+  }
+
+  const isCheckXhr = (promise: Promise<unknown[]>) => {
+    // Skip previous request.
+    return fetchDataPromise.current != promise;
+  }
+
+  const isChangeInputRef = (e: string) => {
+    const isChanged = e !== inputRef.current;
+
+    return isChanged;
   }
 
   const _onChangeDebounce = useCallback(
@@ -85,8 +112,8 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
   );
 
   return <div className="search-input--wrapper">
-    <input className="search-input--text" placeholder={placeholder} onChange={_onChangeDebounce}></input>
-    <SearchResultList list={list} isLoading={isLoading} isError={isError} onSelectItem={onSelectItem} />
+    <input className="search-input--text" placeholder={placeholder} onChange={_onChangeDebounce} ref={inputRef}></input>
+    <SearchResultList list={list} status={status} onSelectItem={onSelectItem} />
   </div>
   // Your code end here
 };
