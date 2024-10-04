@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
 
 import Input from '../components/Input';
 
@@ -24,6 +23,6 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     placeholder: "Type something to search...",
-    onSelectItem: fn()
+    onSelectItem: (item: string) => console.log(item)
   },
 };
