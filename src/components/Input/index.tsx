@@ -15,8 +15,19 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
   // DO NOT remove this log
   console.log('input re-render')
 
+  /*
+  Handle 4 state
+    initital: show input with placeholder
+    fetching: fetching data, show input with a loader
+    success: fetched data successfully, show list item or text "No results" if there are no results
+    error: fetched data failed, show error message
+  When click into an item, trigger the onSelectItem function
+  Add a debounce 100ms when fetching data
+  Handle race condition
+   */
   // Your code start here
   const DEBOUNCE_TIME = 100;
+  const NO_RESULTS_MESSAGE = 'No results';
 
   const [isLoading, setLoading] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>();
@@ -64,7 +75,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
     }
 
     if (!results?.length) {
-      return <p className="no-result"> No result </p>
+      return <p className="no-result"> {NO_RESULTS_MESSAGE} </p>
     }
 
     return <div className="list">
