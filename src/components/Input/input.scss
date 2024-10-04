@@ -1,6 +1,10 @@
-* {
-    box-sizing: border-box;
-}
-html{
-    font-size: 16px;
+.input-search-container {
+	position: relative;
+	input {
+		border-radius: 4px;
+		line-height: 1.5em;
+		font-size: 16px;
+		padding: .5em 1em;
+		width: 100%
+	}
 }
