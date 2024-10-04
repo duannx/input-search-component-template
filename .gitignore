@@ -24,3 +24,4 @@ storybook-static
 *.sln
 *.sw?
 *.history
+.vercel
