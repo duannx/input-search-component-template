@@ -24,6 +24,10 @@ body { font-size: 1.6rem; }
         padding: 1.6rem 0;
         overflow: auto;
         max-height: 32rem;
+        display: none;
+        &.show {
+            display: block;
+        }
     }
 
     &-msg,
@@ -36,5 +40,13 @@ body { font-size: 1.6rem; }
         &:hover {
             background: #333;
         }
+    }
+}
+
+
+.loader-area {
+    display: none;
+    &.show {
+        display: block;
     }
 }

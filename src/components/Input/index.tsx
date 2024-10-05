@@ -2,7 +2,7 @@ import "./input.scss";
 import { fetchData } from "../../utils/fetch-data";
 import { debounce } from "../../utils/deboucne";
 import Loader from "../Loader";
-import { forwardRef, useRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useRef, useImperativeHandle, useState, useCallback, useMemo } from "react";
 import React from "react";
 
 export interface InputProps {
@@ -16,26 +16,29 @@ const AutocompleteResults = forwardRef((props, ref) => {
   console.log("xxxx");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string>("");
-  const [names, setNames] = useState<string[]>([]);
-  const [keywords, setKeywords] = useState<string>("");
+  // const isLoadingRef = useRef<boolean>(false);
+  const errorMsgRef = useRef<string>("");
+  const namesRef = useRef<string[]>([]);
+  const keywordsRef = useRef<string>("");
 
-  const onChangeHandler = debounce((evt : React.ChangeEvent<HTMLInputElement>) => {
+
+  //Memoized the onChangeHandler
+  const onChangeHandler = useCallback(debounce((evt : React.ChangeEvent<HTMLInputElement>) => {
     const value = evt.target.value;
+    errorMsgRef.current = "";
     setIsLoading(true);
-    setErrorMsg("");
 
     fetchData(value).then(results => {
-      setNames(results || []);
-      setKeywords(value);
+      namesRef.current = (results || []);
+      keywordsRef.current = value;
       console.log(results);
     }).catch(e =>{
-      setNames([]);
-      setErrorMsg(e as string);
+      namesRef.current = [];
+      errorMsgRef.current = e;
     }).finally(() => {
       setIsLoading(false);
     });
-  }, 100);
+  }, 100), [keywordsRef.current]);
 
   useImperativeHandle(ref, () => ({
     onChangeHandler
@@ -43,20 +46,17 @@ const AutocompleteResults = forwardRef((props, ref) => {
 
   return (
     <>
-      {isLoading && <Loader/>}
-      {keywords.length ? 
-        (
-          <ul className="autocomplete-results">
-            {errorMsg ? (<li className="autocomplete-msg">{errorMsg}</li>) : ""}
-            {(!errorMsg && names.length == 0) ? (<li className="autocomplete-msg">No results!</li>) : ""}
-            {!errorMsg ? names.map((resultElm) => (
-              <li className="autocomplete-item" key={resultElm} onClick={() => props.onSelectItem(resultElm)}>
-                {resultElm}
-              </li>
-            )) : ""}
-          </ul>
-        )
-        : ""
+      {<div className={`loader-area ${isLoading ? "show" : ""}`}><Loader/></div>}
+      {
+        <ul className={`autocomplete-results ${keywordsRef.current.length && !isLoading ? "show" : ""}`}>
+          {errorMsgRef.current ? (<li className="autocomplete-msg">{errorMsgRef.current}</li>) : ""}
+          {(!errorMsgRef.current && namesRef.current.length == 0) ? (<li className="autocomplete-msg">No results!</li>) : ""}
+          {!errorMsgRef.current ? namesRef.current.map((resultElm) => (
+            <li className="autocomplete-item" key={resultElm} onClick={() => props.onSelectItem(resultElm)}>
+              {resultElm}
+            </li>
+          )) : ""}
+        </ul>
       }
     </>
   );
