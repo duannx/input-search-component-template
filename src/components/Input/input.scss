@@ -5,28 +5,28 @@ html {
   font-size: 16px;
 }
 .search {
-	&__wrapper {
-		width: 300px;
-	}
+  &__wrapper {
+    width: 300px;
+  }
   &__input {
     padding: 12px 16px;
-		font-size: 16px;
+    font-size: 16px;
     border-radius: 4px;
     width: 100%;
   }
   &__result {
-		width: 100%;
-		position: relative;
-		border: solid 1px #ddd;
+    width: 100%;
+    position: relative;
+    border: solid 1px #ddd;
     border-radius: 4px;
     margin-top: 4px;
     min-height: 100px;
     max-height: 300px;
     overflow: auto;
   }
-	&__items {
+  &__items {
     display: flex;
-    flex-direction: column
+    flex-direction: column;
   }
   &__item {
     padding: 16px;
@@ -36,14 +36,14 @@ html {
     }
   }
   &__no-result {
-		padding: 12px 16px;
+    padding: 12px 16px;
     text-align: center;
-		font-style: italic;
+    font-style: italic;
     color: #333;
   }
   &__error-msg {
     padding: 12px 16px;
-		font-style: italic;
+    font-style: italic;
     color: red;
   }
 }
