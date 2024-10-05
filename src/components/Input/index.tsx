@@ -1,6 +1,5 @@
 import "./input.scss";
 import { fetchData } from "../../utils/fetch-data";
-import { debounce } from "../../utils/deboucne";
 import Loader from "../Loader";
 import { useEffect, useState } from "react";
 
@@ -53,17 +52,21 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
 
         const response: string[] = await fetchData(inputValue);
 
-        setData({
-          results: response,
-          loading: false,
-          error: null,
-        });
+        if (!ignore) {
+          setData({
+            results: response,
+            loading: false,
+            error: null,
+          });
+        }
       } catch (err) {
-        setData({
-          results: [],
-          loading: false,
-          error: err + "",
-        });
+        if (!ignore) {
+          setData({
+            results: [],
+            loading: false,
+            error: err + "",
+          });
+        }
       }
     };
 
@@ -71,7 +74,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
 
     const debounceFetch = setTimeout(() => {
       fetchDataAsync();
-    }, 1000);
+    }, 300);
 
     return () => {
       ignore = true;
@@ -97,7 +100,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
       return <Loader />;
     }
 
-    if (error) {
+    if (error && !typing) {
       return <span className="message text-red">{error}</span>;
     }
 
