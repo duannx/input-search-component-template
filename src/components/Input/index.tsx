@@ -2,7 +2,7 @@ import "./input.scss";
 import { fetchData } from "../../utils/fetch-data";
 import { debounce } from "../../utils/deboucne";
 import Loader from "../Loader";
-import { forwardRef, useRef, useImperativeHandle, useState, useCallback, useMemo } from "react";
+import { forwardRef, useRef, useImperativeHandle, useState, useCallback } from "react";
 import React from "react";
 
 export interface InputProps {
@@ -12,7 +12,11 @@ export interface InputProps {
   onSelectItem: (item: string) => void;
 }
 
-const AutocompleteResults = forwardRef((props, ref) => {
+export interface IAutocompleteResultsProps {
+  onSelectItem: (item: string) => void
+}
+
+const AutocompleteResults = forwardRef((props : IAutocompleteResultsProps, ref) => {
   console.log("xxxx");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -66,7 +70,7 @@ const AutocompleteResults = forwardRef((props, ref) => {
 const Input = ({ placeholder, onSelectItem }: InputProps) => {
   // DO NOT remove this log
   console.log('input re-render');
-  const childRef = useRef();
+  const childRef = useRef<any>();
 
   // Your code start here
   return (
