@@ -37,14 +37,14 @@ const AutocompleteResults = forwardRef((props : IAutocompleteResultsProps, ref) 
     fetchData(value).then(results => {
       namesRef.current = (results || []);
       keywordsRef.current = value;
-      console.log(results);
+      console.log(value, results);
     }).catch(e =>{
       namesRef.current = [];
       errorMsgRef.current = e;
     }).finally(() => {
       setIsLoading(false);
     });
-  }, 100), [keywordsRef.current]);
+  }, 500), [keywordsRef.current]);
 
   useImperativeHandle(ref, () => ({
     onChangeHandler
