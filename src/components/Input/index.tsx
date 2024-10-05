@@ -21,6 +21,8 @@ const AutocompleteResults = forwardRef((props : IAutocompleteResultsProps, ref) 
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // const isLoadingRef = useRef<boolean>(false);
+
+  //Use useRef instead of useState for preventing create new variables
   const errorMsgRef = useRef<string>("");
   const namesRef = useRef<string[]>([]);
   const keywordsRef = useRef<string>("");
@@ -70,6 +72,8 @@ const AutocompleteResults = forwardRef((props : IAutocompleteResultsProps, ref) 
 const Input = ({ placeholder, onSelectItem }: InputProps) => {
   // DO NOT remove this log
   console.log('input re-render');
+
+  //use childRef to prevent re-render the Input component, only re-render the AutoComplete and Loader component
   const childRef = useRef<any>();
 
   // Your code start here
