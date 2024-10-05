@@ -4,3 +4,21 @@
 html{
     font-size: 16px;
 }
+.erorr{
+    color: rgb(241, 10, 10);
+}
+ul {
+    list-style: none;
+  }
+  
+  ul > li {
+    padding: 8px 12px;
+  }
+  
+  ul > li:hover {
+    background-color: rgb(31, 30, 30);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  
