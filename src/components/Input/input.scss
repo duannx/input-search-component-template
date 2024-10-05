@@ -1,6 +1,62 @@
-* {
-    box-sizing: border-box;
+:root {
+  --width: 300px;
 }
-html{
-    font-size: 16px;
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+.input-container {
+  width: var(--width);
+  position: relative;
+}
+
+input {
+  width: var(--width);
+  height: 30px;
+}
+
+.result-container {
+  width: var(--width);
+  position: relative;
+  height: 200px;
+  background-color: bisque;
+  overflow-y: auto;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul > li {
+  height: 30px;
+  border: solid 1px #ccc;
+  background-color: #bbb;
+  padding-left: 10px;
+}
+
+ul > li:hover {
+  background-color: #aaa;
+  cursor: pointer;
+}
+
+.message {
+  display: block;  
+  padding: 10px;
+  text-wrap: wrap;
+  width: (--width);
+}
+
+.text-red {
+  color: red;
+}
+
+.text-green {
+  color: green;
 }
