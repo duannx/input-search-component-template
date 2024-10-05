@@ -12,7 +12,7 @@ export async function fetchData(query: string): Promise<string[]> {
     log('fetching', query)
     await delay(500 + Math.floor(Math.random() * 2000))
     log('return filter for query', query)
-    const shouldThrow = Math.random() < 0.2
+    const shouldThrow = Math.random() < 0.1
     if(shouldThrow) {
         log('throw error for query', query)
         throw `${cuteErrors[Math.floor(Math.random() * 10)]} - query: ${query}`
