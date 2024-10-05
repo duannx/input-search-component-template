@@ -32,6 +32,14 @@ const AutocompleteResults = forwardRef((props : IAutocompleteResultsProps, ref) 
   const onChangeHandler = useCallback(debounce((evt : React.ChangeEvent<HTMLInputElement>) => {
     const value = evt.target.value;
     errorMsgRef.current = "";
+
+    if(!value) {
+      namesRef.current = [];
+      keywordsRef.current = "";
+      setChange(new Date().getTime());
+      return;
+    }
+
     setLoading(true);
 
     fetchData(value).then(results => {
