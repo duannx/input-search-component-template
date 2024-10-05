@@ -19,10 +19,10 @@ export interface IAutocompleteResultsProps {
 const AutocompleteResults = forwardRef((props : IAutocompleteResultsProps, ref) => {
   console.log("xxxx");
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const isLoadingRef = useRef<boolean>(false);
-
+  const [hasChange, setChange] = useState<number>(0);
+  const [isLoading, setLoading] = useState<boolean>(false);
   //Use useRef instead of useState for preventing create new variables
+  const isLoadingRef = useRef<boolean>(false);
   const errorMsgRef = useRef<string>("");
   const namesRef = useRef<string[]>([]);
   const keywordsRef = useRef<string>("");
@@ -32,19 +32,20 @@ const AutocompleteResults = forwardRef((props : IAutocompleteResultsProps, ref) 
   const onChangeHandler = useCallback(debounce((evt : React.ChangeEvent<HTMLInputElement>) => {
     const value = evt.target.value;
     errorMsgRef.current = "";
-    setIsLoading(true);
+    setLoading(true);
 
     fetchData(value).then(results => {
       namesRef.current = (results || []);
       keywordsRef.current = value;
+      setChange(new Date().getTime());
       console.log(value, results);
     }).catch(e =>{
       namesRef.current = [];
       errorMsgRef.current = e;
     }).finally(() => {
-      setIsLoading(false);
+      setLoading(false);
     });
-  }, 500), [keywordsRef.current]);
+  }, 500), [hasChange]);
 
   useImperativeHandle(ref, () => ({
     onChangeHandler
@@ -54,10 +55,10 @@ const AutocompleteResults = forwardRef((props : IAutocompleteResultsProps, ref) 
     <>
       {<div className={`loader-area ${isLoading ? "show" : ""}`}><Loader/></div>}
       {
-        <ul className={`autocomplete-results ${keywordsRef.current.length && !isLoading ? "show" : ""}`}>
+        <ul className={`autocomplete-results ${keywordsRef.current.length && !isLoadingRef.current && hasChange ? "show" : ""}`}>
           {errorMsgRef.current ? (<li className="autocomplete-msg">{errorMsgRef.current}</li>) : ""}
-          {(!errorMsgRef.current && namesRef.current.length == 0) ? (<li className="autocomplete-msg">No results!</li>) : ""}
-          {!errorMsgRef.current ? namesRef.current.map((resultElm) => (
+          {(!errorMsgRef.current && namesRef.current.length == 0 && hasChange) ? (<li className="autocomplete-msg">No results!</li>) : ""}
+          {!errorMsgRef.current && hasChange ? namesRef.current.map((resultElm) => (
             <li className="autocomplete-item" key={resultElm} onClick={() => props.onSelectItem(resultElm)}>
               {resultElm}
             </li>
