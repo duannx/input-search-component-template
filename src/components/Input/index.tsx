@@ -14,18 +14,17 @@ export interface InputProps {
 const Input = ({ placeholder, onSelectItem }: InputProps) => {
   // DO NOT remove this log
   console.log('input re-render');
-  const [isCleanUp, setIsCleanUp] = useState<boolean>(false);
-  const [searchTeam, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [listResult, setListResult] = useState<string[]>([]);
   const [isSearching, setIsSearch] = useState<boolean>(false);
 
   const handleClick = useCallback((item: string) => {
     onSelectItem(item)
-  },[])
+  },[onSelectItem])
 
   function ListResult() {
     return (
-      listResult.length > 0 ? <div className='list-result'>
+      searchTerm === '' ? null : listResult.length > 0 ? <div className='list-result'>
         {listResult.map((item, index) => <div  className='list-result-item' onClick={() => handleClick(item)} key={index}>
           {item}
         </div> )}
@@ -33,7 +32,8 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
      : <div className='no-result'>No result</div> );
   }
 
-  const getData = useCallback(async (searchTerm: string) => {
+  const getData = async (searchTerm: string) => {
+    if(searchTerm === '') return
     try {
       setIsSearch(true)
       const res = await fetchData(searchTerm);
@@ -42,20 +42,22 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
     } finally {
       setIsSearch(false)
     }
-  },[])
+  }
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setSearchTerm(e.target.value);
-  
   };
 
   useEffect(() => {
-    if(searchTeam !== '' && !isCleanUp) {
-      getData(searchTeam)
+    let ignore = false;
+    if(!ignore) {
+      getData(searchTerm)
     }
-    return () => setIsCleanUp(true);
-  }, [searchTeam])
+    return () => {
+      ignore = true
+    };
+  }, [searchTerm])
 
   // Your code start here
   return (
