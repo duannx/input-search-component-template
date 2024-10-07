@@ -1,103 +1,72 @@
 import "./input.scss"
-import { useState, useCallback, useRef } from "react"
+import { useReducer, useEffect, useCallback } from "react"
 import { fetchData } from "../../utils/fetch-data"
 import { debounce } from "../../utils/deboucne"
-import Loader from "../Loader"
-
+import SearchResults from "./SearchResults"
+import { reducer, initialState } from "./inputReducer"
 export interface InputProps {
   /** Placeholder of the input */
   placeholder?: string
   /** On click item handler */
   onSelectItem: (item: string) => void
 }
-
-const DEBOUNCE_TIME = 100
-const INITIAL_RESULTS: string[] = []
-
-const Input = ({ placeholder, onSelectItem }: InputProps) => {  
+const DEBOUNCE_TIME = 500
+const Input = ({ placeholder, onSelectItem }: InputProps) => {
   // DO NOT remove this log
   console.log('input re-render')
 
-// Your code starts here
+  // Your code starts here
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const { searchQuery, searchResults, isLoading, errorMessage } = state
 
-  const [searchQuery, setSearchQuery] = useState("")
-  const [searchResults, setSearchResults] = useState<string[]>(INITIAL_RESULTS)
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  useEffect(() => {
+    if (!searchQuery) {
+      return
+    }
 
-  // A ref to store the current request id
-  const latestRequestRef = useRef(0)
-  const isLatestRequest = (requestId: number) => requestId === latestRequestRef.current;
-
-  const debouncedSearch = useCallback(
-    debounce(async (query: string) => {
-      // Increase request id for the new request
-      const requestId = ++latestRequestRef.current
-
+    const startFetching = async () => {
       try {
-        if (query) {
-          const results = await fetchData(query)
-          // Only update the state if this is the latest request
-          if (isLatestRequest(requestId)) {
-            setSearchResults(results)
-          }
+        const results = await fetchData(searchQuery)
+        if (!ignore) {
+          dispatch({ type: "SET_SEARCH_RESULTS", payload: results })
         }
-      } catch (error) {
-        if (isLatestRequest(requestId)) {
-          if (typeof error === "string") {
-            setErrorMessage(error)
-          } else {
-            console.log(error)
-          }
-        }
-      } finally {
-        if (isLatestRequest(requestId)) {
-          setIsLoading(false)
+      } catch (error: any) {
+        if (!ignore) {
+          dispatch({ type: "SET_ERROR", payload: error.message || "An error occurred" })
         }
       }
+    }
+    let ignore = false
+    startFetching()
+
+    return () => {
+      ignore = true
+    }
+  }, [searchQuery])
+
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      dispatch({ type: "SET_SEARCH_QUERY", payload: value })
     }, DEBOUNCE_TIME),
     []
   )
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
-    setSearchQuery(value)
-    setIsLoading(true)
-    setSearchResults(INITIAL_RESULTS)
-    setErrorMessage(null)
-
-    debouncedSearch(value)
-  }
 
   return (
     <form className="form">
       <input
         placeholder={placeholder}
         type="text"
-        value={searchQuery}
-        onChange={handleSearch}
+        onChange={(e) => handleSearch(e.target.value)}
         className="form__field"
       />
 
       {searchQuery && (
-        <div className="search-result">
-          {isLoading && <Loader />}
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
-          {searchResults.length === 0 && !isLoading && !errorMessage && (
-            <p className="no-result">No results found</p>
-          )}
-          <div className="lists">
-            {searchResults.map((result, index) => (
-              <div
-                className="item"
-                key={index}
-                onClick={() => onSelectItem(result)}
-              >
-                {result}
-              </div>
-            ))}
-          </div>
-        </div>
+        <SearchResults
+          isLoading={isLoading}
+          errorMessage={errorMessage}
+          searchResults={searchResults}
+          onSelectItem={onSelectItem}
+        />
       )}
     </form>
   )
