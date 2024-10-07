@@ -10,7 +10,7 @@ function delay(ms: number) {
 
 export async function fetchData(query: string): Promise<string[]> {
     log('fetching', query)
-    await delay(500 + Math.floor(Math.random() * 2000))
+    await delay(100 + Math.floor(Math.random() * 2000))
     log('return filter for query', query)
     const shouldThrow = Math.random() < 0.2
     if(shouldThrow) {
