@@ -63,7 +63,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
         {status === InputState.FETCHING && <Loader/>}
         {status === InputState.ERROR && <div className="search-container__error">{error}</div>}
         {status === InputState.SUCCESS && <div className="search-container__result">
-          {!!data?.length ? data.map((item, index) => <div key={index} onClick={() => onSelectItem(item)}>{item}</div>) : 'No results'}
+          {!!data?.length ? data.map((item, index) => <div className="search-container__item" key={index} onClick={() => onSelectItem(item)}>{item}</div>) : 'No results'}
         </div>}
     </div>}
   </div>

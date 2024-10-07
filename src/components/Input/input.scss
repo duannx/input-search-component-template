@@ -14,7 +14,6 @@ html{
         border: 1px solid #2d3436;
     }
     &__content {
-        padding: 12px;
         margin-top: 8px;
         position: relative;
         border:  1px solid #dfe6e9;
@@ -30,6 +29,14 @@ html{
     }
     &__error {
         color: #d63031;
+    }
+    &__item {
+        cursor: pointer;
+        padding: 12px;
+        &:hover {
+            background: #34495e;
+            color: white;
+        }
     }
 
 }
