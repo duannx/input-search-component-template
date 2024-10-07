@@ -1,42 +1,134 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+* {
+  box-sizing: border-box
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+html {
+  font-size: 16px
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+body {
+  justify-content: center;
+}
+
+.search-result {
+  width: 100%;
+  position: absolute;
+  border-radius: 4px;
+  min-height: 100px;
+  border: solid 1px #ddd;
+  margin-top: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.lists {
+  display: flex;
+  flex-direction: column
+}
+
+.item {
+  padding: 1em 2em
+}
+
+.item:hover {
+  background-color: #eee;
+  cursor: pointer
+}
+
+.no-result {
+  font-style: italic;
+  color: #333;
+  text-align: center
+}
+
+.error-message {
+  color: red;
+  font-style: italic;
+  padding: .5em 1em
+}
+
+.loader-container {
+  height: 50px;
+  width: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(.8)
+}
+
+.loader {
+  animation: rotate 1s infinite;
+  height: 50px;
+  width: 50px;
+  position: absolute
+}
+
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+  content: "";
+  display: block;
+  height: 20px;
+  width: 20px
+}
+
+.loader:before {
+  animation: ball1 1s infinite;
+  background-color: #ccc;
+  box-shadow: 30px 0 #333;
+  margin-bottom: 10px
+}
+
+.loader:after {
+  animation: ball2 1s infinite;
+  background-color: #333;
+  box-shadow: 30px 0 #ccc
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0) scale(.8)
   }
+
+  50% {
+    transform: rotate(360deg) scale(1.2)
+  }
+
   to {
-    transform: rotate(360deg);
+    transform: rotate(720deg) scale(.8)
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@keyframes ball1 {
+  0% {
+    box-shadow: 30px 0 #333
+  }
+
+  50% {
+    box-shadow: 0 0 #333;
+    margin-bottom: 0;
+    transform: translate(15px, 15px)
+  }
+
+  to {
+    box-shadow: 30px 0 #333;
+    margin-bottom: 10px
   }
 }
 
-.card {
-  padding: 2em;
-}
+@keyframes ball2 {
+  0% {
+    box-shadow: 30px 0 #ccc
+  }
 
-.read-the-docs {
-  color: #888;
+  50% {
+    box-shadow: 0 0 #ccc;
+    margin-top: -20px;
+    transform: translate(15px, 15px)
+  }
+
+  to {
+    box-shadow: 30px 0 #ccc;
+    margin-top: 0
+  }
 }
