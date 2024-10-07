@@ -1,6 +1,45 @@
 * {
     box-sizing: border-box;
-}
-html{
     font-size: 16px;
+}
+
+.search {
+    &__panel {
+        max-width: 456px;
+        margin: 60px auto;
+    }
+
+    &__box {
+        width: 100%;
+        padding: 12px 20px;
+    }
+
+    &__results {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        max-height: 480px;
+        overflow: auto;
+    }
+
+    &__item {
+        padding: 12px 20px;
+        background-color: #fafafa;
+        cursor: pointer;
+        transition: all .3s;
+
+        &:hover {
+            background-color: #efefef;
+        }
+    }
+
+    &__message, &__error {
+        padding: 12px 20px;
+        background-color: #fafafa;
+    }
+
+    &__error {
+        color: rgba(255, 0, 0, 1);
+        background: rgba(255, 0, 0, 0.1);
+    }
 }
