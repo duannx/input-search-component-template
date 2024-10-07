@@ -27,7 +27,8 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
 
   const lastTimeID = useRef<number>(0);
 
-  const searchText = async (query: string) => {
+  const handleChange = debounce(async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value;
     if(!query) {
       setStatus(InputState.INITITAL);
       setData([]);
@@ -54,8 +55,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
       setStatus(InputState.ERROR);
       setError(error as string)
     }
-  }
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => debounce(searchText(event.target.value), 100)
+  }, 100)
 
   return <div className="search-container">
     <input className="search-container__input" onChange={handleChange} placeholder={placeholder}/>
