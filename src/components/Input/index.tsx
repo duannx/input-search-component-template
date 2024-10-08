@@ -2,7 +2,7 @@ import "./input.scss";
 import { fetchData } from "../../utils/fetch-data";
 import { debounce } from "../../utils/deboucne";
 import Loader from "../Loader";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export interface InputProps {
   /** Placeholder of the input */
@@ -10,6 +10,43 @@ export interface InputProps {
   /** On click item handler */
   onSelectItem: (item: string) => void;
 }
+
+const renderResult = (
+  search: string,
+  loading: boolean,
+  error: string,
+  results: string[],
+  onSelectItem: (r: string) => void
+) => {
+  if (search !== "") {
+    if (!loading) {
+      if (error != "") {
+        return <div className="error">{error}</div>;
+      } else if (results && results.length > 0) {
+        return (
+          <div className="list">
+            {results.map((r, index) => {
+              return (
+                <div
+                  key={`${r}_${index}`}
+                  className="item"
+                  onClick={() => {
+                    onSelectItem(r);
+                  }}
+                >
+                  {r}
+                </div>
+              );
+            })}
+          </div>
+        );
+      } else {
+        return <p className="no-result"> No result </p>;
+      }
+    }
+    return <Loader />;
+  }
+};
 
 const Input = ({ placeholder, onSelectItem }: InputProps) => {
   // DO NOT remove this log
@@ -21,54 +58,31 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSearch = debounce((searchText: string) => {
-    setSearch(searchText);
-    if (searchText.trim() != "") {
-      setLoading(true);
-      fetchData(searchText)
-        .then((response) => {
-          setError("");
-          setResults(response);
-        })
-        .catch((error) => {
-          setError(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, 100);
-
-  const renderResult = () => {
-    if (search !== "") {
-      if (!loading) {
-        if (error != "") {
-          return <div className="error">{error}</div>;
-        } else if (results && results.length > 0) {
-          return (
-            <div className="list">
-              {results.map((r, index) => {
-                return (
-                  <div
-                    key={`${r}_${index}`}
-                    className="item"
-                    onClick={() => {
-                      onSelectItem(r);
-                    }}
-                  >
-                    {r}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        } else {
-          return <p className="no-result"> No result </p>;
+  const handleSearch = debounce(
+    useCallback(
+      (searchText: string) => {
+        if (!loading) {
+          setSearch(searchText);
+          if (searchText.trim() != "") {
+            setLoading(true);
+            fetchData(searchText)
+              .then((response) => {
+                setError("");
+                setResults(response);
+              })
+              .catch((error) => {
+                setError(error);
+              })
+              .finally(() => {
+                setLoading(false);
+              });
+          }
         }
-      }
-      return <Loader />;
-    }
-  };
+      },
+      [loading]
+    ),
+    100
+  );
 
   return (
     <>
@@ -81,7 +95,9 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
       />
 
       {search.trim() !== "" && (
-        <div className="search-result">{renderResult()}</div>
+        <div className="search-result">
+          {renderResult(search, loading, error, results, onSelectItem)}
+        </div>
       )}
     </>
   );
