@@ -16,9 +16,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       
-    <Input placeholder='Test' onSelectItem={function (item: string): void {
-      alert(item)
-    } }></Input>
+    <Input placeholder='Todo...? Enter to add this task to the list'></Input>
 
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
