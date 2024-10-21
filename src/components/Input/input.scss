@@ -5,42 +5,107 @@ html{
     font-size: 16px;
 }
 $searchBoxWidth: 300px;
-.search {
+.todo {
     &__input {
-        padding: 8px;
         border-radius: 4px;
-        width: $searchBoxWidth;
-    }
-    &__result {
-        margin-top: 8px;
+        width: 500px;
         border: solid 1px #ddd;
-        border-radius: 4px;
-        position: relative;
-        min-height: 80px;
-        max-height: 500px;
-        width: $searchBoxWidth;
-        max-width: $searchBoxWidth;
-        overflow: auto;
+        background: rgba(0, 0, 0, .003);
+        box-shadow: inset 0 -2px 1px rgba(0, 0, 0, .03);
+        height: 65px;
+        padding: 16px 16px 16px 60px;
+        font-size: 20px;
     }
-    &__no-result {
-        padding: 12px 8px;
-        text-align: center;
-        color: #333;
+
+    &__desc {
+        margin-top: 20px;
     }
-    &__error-message {
-        padding: 12px 8px;
-        color: red;
-    }
-    &__list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    &__item {
-        padding: 12px 20px;
-        cursor: pointer;
-        &:hover {
-            background-color: #f9f9f9;
+    &__tool-bar {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: solid 1px #ddd;
+        button {
+            background-color: transparent;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: solid 1px transparent;
+            &:hover, &.active {
+                border: solid 1px red;
+            }
         }
     }
+    &__filter {
+        display: flex;
+        gap: 8px;
+    }
+}
+.todo-item {
+    font-size: 24px;
+    height: 60px;
+    border-bottom: solid 1px #ddd;
+    &__wrapper {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 10px;
+        &.finished {
+            .check-icon {
+                visibility: visible;
+            }
+            .todo-item__title {
+                text-decoration: line-through;
+                color: #999;
+            }
+        }
+    }
+    &__title {
+        flex: 1;
+        min-width: 100px;
+    }
+    input {
+        height: 100%;
+        width: 100%;
+        padding: 10px 20px 10px 70px;
+        font-size: 24px;
+    }
+}
+.btn-checkbox {
+    width: 40px;
+    height: 40px;
+    border: solid 1px #ccc;
+    border-radius: 50%;
+    background-color: #fff;
+}
+.check-icon {
+    position: relative;
+    visibility: hidden;
+    &:before {
+        position: absolute;
+        display: block;
+        content: "";
+        width: 10px;
+        height: 20px;
+        border-style: solid;
+        border-width: 0 2px 2px 0;
+        border-color: green;
+        transform: rotate(45deg);
+        top: -13px;
+        left: -6px;
+    }
+}
+.btn-close {
+    padding: 4px;
+    background-color: transparent;
+    border: none;
+    opacity: 0.5;
+    font-weight: bold;
+    font-size: 20px;
+    &:hover {
+        opacity: 1;
+    }
+}
+button {
+    cursor: pointer;
 }
