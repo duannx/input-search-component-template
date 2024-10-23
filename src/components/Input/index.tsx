@@ -13,10 +13,10 @@ export interface ITodoItem {
   name: string;
   status: string;
 }
-
 export interface ITodoResult {
   todoList: React.MutableRefObject<ITodoItem[]>;
   hasChange: number;
+  onSelectedTodoItem: (item: ITodoItem) => void;
 }
 
 export class TodoState {
@@ -29,6 +29,50 @@ export class ActionState {
   public static todo: string = "todo";
   public static completed: string = "completed";
 }
+
+
+const EditPanel = forwardRef(({}, ref) => {
+  const currentItemRef = useRef<ITodoItem>();
+  const [showPanel, setShowPanel] = useState<boolean>(false);
+  const editInputRef = useRef<HTMLInputElement>(null);
+  const resultPanelRef = useRef<any>();
+
+  console.log("Render EditPanel");
+
+
+  const saveEditingItem = useCallback((evt: React.KeyboardEvent | null) => {
+    if(evt?.type == "keydown" && evt.key != "Enter") return;
+    if(currentItemRef.current)
+      currentItemRef.current.name = editInputRef.current?.value || "";
+
+    resultPanelRef.current.forceRenderTodoList();
+    setShowPanel(false);
+  }, [currentItemRef.current]);
+
+  const forceRenderEditPanel = useCallback((_item : ITodoItem, resultRef: React.MutableRefObject<any>) => {
+    setShowPanel(true);
+    currentItemRef.current = _item;
+    if(editInputRef.current)
+      editInputRef.current.value = _item.name;
+
+    resultPanelRef.current = resultRef.current;
+  }, [currentItemRef.current])
+
+  useImperativeHandle(ref, () => ({
+    forceRenderEditPanel
+  }));
+
+  return (
+    <>
+      <div className={`todo-edit ${showPanel ? "show" : ""}`}>
+        <input ref={editInputRef} onKeyDown={(evt) => saveEditingItem(evt)} ></input>
+        <button onClick={() => saveEditingItem(null)}>Save</button>
+      </div>
+    </>
+  );
+
+})
+
 
 
 const TodoResult = forwardRef((props : ITodoResult, ref) => {
@@ -63,6 +107,11 @@ const TodoResult = forwardRef((props : ITodoResult, ref) => {
     })
     props.todoList.current = [...newList];
     forceRenderTodoList();
+  }, [hasChange]);
+
+
+  const editItem = useCallback((item: ITodoItem) => {
+      props.onSelectedTodoItem(item);
   }, [hasChange]);
 
 
@@ -136,8 +185,17 @@ const TodoResult = forwardRef((props : ITodoResult, ref) => {
         {filteredList.current?.length === 0 ? <li className="todo-msg">No {actionState.current != ActionState.all ? actionState.current + " " : ""}task!</li> : null}
         {hasChange
           ? filteredList.current?.map((todoItem) => (
-              <li className={`todo-item ${todoItem.status == TodoState.completed ? "complete" : ""}`} key={todoItem.id} onClick={() => (setItemState(todoItem))}>
-                <span>{todoItem.name}</span> <button onClick={() => removeItem(todoItem)}>remove</button>
+              <li className={`todo-item ${todoItem.status == TodoState.completed ? "complete" : ""}`} key={todoItem.id}>
+                <div className="todo-content-item">
+                  <button onClick={() => setItemState(todoItem)}>
+                    <span className="tick">🗸</span>
+                    <span className="untick"> &nbsp; </span>
+                  </button>
+                  <span className="todo-content-text">{todoItem.name}</span> 
+                </div>
+                <div className="todo-action">
+                  <button onClick={() => editItem(todoItem)}>🖉</button> <button onClick={() => removeItem(todoItem)}>🗙</button>
+                </div>
               </li>
             ))
           : null}
@@ -149,14 +207,16 @@ const TodoResult = forwardRef((props : ITodoResult, ref) => {
 const Input: React.FC<InputProps> = ({ placeholder }) => {
   console.log("Render: Hold component");
 
-  const childRef = useRef<any>();
+  const resultRef = useRef<any>();
+  const childEditPanelRef = useRef<any>();
   const todoListRef = useRef<ITodoItem[]>(JSON.parse(localStorage.getItem("currentDataRJ") || "[]"));
   const keywordsRef = useRef<HTMLInputElement>(null);
   const hasChange = useRef<number>(0);
+  const selectItemRef = useRef<ITodoItem>({} as ITodoItem);
 
   setTimeout(() => {
     if(todoListRef.current.length) {
-        childRef.current?.forceRenderTodoList();
+        resultRef.current?.forceRenderTodoList();
     }
     document.querySelector(".todo")?.classList.add("show");
   })
@@ -170,9 +230,6 @@ const Input: React.FC<InputProps> = ({ placeholder }) => {
 
         keywordsRef.current && (keywordsRef.current.value = "");
         if (!value) {
-          todoListRef.current = [];
-          hasChange.current = time;
-          childRef.current.forceRenderTodoList();
           return;
         }
 
@@ -182,11 +239,18 @@ const Input: React.FC<InputProps> = ({ placeholder }) => {
         todo.status = TodoState.todo;
         todoListRef.current.push(todo);
 
-        childRef.current.forceRenderTodoList();
+        resultRef.current.forceRenderTodoList();
         hasChange.current = time; // Trigger rerender for TodoResult
       }
     }, 100),
     [hasChange.current]
+  );
+
+
+  const onSelectedTodoItem = useCallback((item: ITodoItem) => {
+      childEditPanelRef.current.forceRenderEditPanel(item, resultRef);
+    },
+    [selectItemRef.current]
   );
 
   // Prevent Input from rerendering unnecessarily
@@ -197,7 +261,9 @@ const Input: React.FC<InputProps> = ({ placeholder }) => {
         placeholder={placeholder}
         onKeyDown={onChangeHandler} // Using the memoized handler
       />
-      <TodoResult todoList={todoListRef} hasChange={hasChange.current} ref={childRef}/>
+
+      <EditPanel ref={childEditPanelRef}></EditPanel>
+      <TodoResult todoList={todoListRef} hasChange={hasChange.current} onSelectedTodoItem={onSelectedTodoItem} ref={resultRef}/>
     </div>
   );
 };
