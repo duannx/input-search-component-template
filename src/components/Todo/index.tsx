@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import ResultItem from "./ResultItem";
-import { newStateType, useDataStore } from "./store";
+import { useDataStore } from "./store";
 import { useShallow } from "zustand/shallow";
 import "./Todo.scss";
 
@@ -11,6 +11,7 @@ const Todo = () => {
     useShallow((state) => state.getActiveData)
   );
   const addData = useDataStore(useShallow((state) => state.addData));
+  const activeAll = useDataStore(useShallow((state) => state.activeAll));
   const [initialValue, setInitialValue] = useState("");
 
   const handlerEnter = (e: any) => {
@@ -25,8 +26,7 @@ const Todo = () => {
   const handleGetActiveData = (status: string) => {
     if (status === "active") {
       setFilter("active");
-    }
-    else if (status === "completed") {
+    } else if (status === "completed") {
       setFilter("completed");
     } else setFilter("all");
   };
@@ -43,6 +43,7 @@ const Todo = () => {
 
   return (
     <div className="wrapper">
+      <label className="active-all-cta" onClick={activeAll}></label>
       <input
         onKeyDown={(e: any) => {
           if (e.key === "Enter") {
@@ -53,7 +54,7 @@ const Todo = () => {
         value={initialValue}
         type="text"
         className="header"
-        placeholder="What 21needs to be done?"
+        placeholder="What needs to be done?"
       />
       <div className="body">
         {!!listResult?.length &&
@@ -67,13 +68,30 @@ const Todo = () => {
             {listResult.length > 1 ? "items left!" : "item left!"}
           </div>
           <div className="footer--center">
-            <div className={`${filter === 'all' ? 'filter-active' : 'filter'}`} onClick={() => handleGetActiveData("all")}>All</div>
-            <div className={`${filter === 'active' ? 'filter-active' : 'filter'}`}  onClick={() => handleGetActiveData("active")}>Active</div>
-            <div className={`${filter === 'completed' ? 'filter-active' : 'filter'}`}  onClick={() => handleGetActiveData("completed")}>
+            <div
+              className={`${filter === "all" ? "filter-active" : "filter"}`}
+              onClick={() => handleGetActiveData("all")}
+            >
+              All
+            </div>
+            <div
+              className={`${filter === "active" ? "filter-active" : "filter"}`}
+              onClick={() => handleGetActiveData("active")}
+            >
+              Active
+            </div>
+            <div
+              className={`${
+                filter === "completed" ? "filter-active" : "filter"
+              }`}
+              onClick={() => handleGetActiveData("completed")}
+            >
               Completed
             </div>
           </div>
-          <div className="footer--right" onClick={getActiveData}>Clear Completed</div>
+          <div className="footer--right" onClick={getActiveData}>
+            Clear Completed
+          </div>
         </div>
       )}
     </div>

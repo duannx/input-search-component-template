@@ -13,9 +13,10 @@ export type dataType = {
   updateName: (newState: newStateType) => void;
   toggle: (newState: newStateType) => void;
   getActiveData: () => void;
-  getAllData: () => void;
+  activeAll: () => void;
 };
-export const useDataStore = create<dataType>((set, get) => ({
+
+export const useDataStore = create<dataType>((set) => ({
   data: [],
   addData: (newState: newStateType) => {
     set((state) => ({ data: [...state.data, newState] }));
@@ -46,9 +47,14 @@ export const useDataStore = create<dataType>((set, get) => ({
       data: state.data.filter((item) => item.active),
     }));
   },
-  getAllData: () => {
+  activeAll: () => {
     set((state) => ({
-      data: state.data,
+      data: state.data.map(item => {
+        if(state.data.findIndex(i => i.active) > -1) {
+          return {...item, active: false}
+        }
+        return {...item, active: true}
+      })
     }));
-  },
+  }
 }));

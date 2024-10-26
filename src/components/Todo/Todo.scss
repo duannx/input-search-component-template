@@ -1,6 +1,21 @@
 .wrapper {
+  position: relative;
   width: 550px;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,.2),0 25px 50px 0 rgba(0,0,0,.1);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+}
+
+.active-all-cta {
+  position: absolute;
+  left: 0;
+  top: 0;
+  &:before {
+    content: "❯";
+    display: inline-block;
+    font-size: 22px;
+    padding: 15px 22px;
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
 }
 
 .header {
@@ -72,7 +87,9 @@
   }
 }
 
-.result-input, .result-input--checked, .edit-input {
+.result-input,
+.result-input--checked,
+.edit-input {
   background-position: 0;
   background-repeat: no-repeat;
   color: #484848;
@@ -106,7 +123,6 @@
   justify-content: space-between;
   border: 2px solid #e6e6e6;
   font-size: 15px;
-  height: 20px;
   padding: 10px 15px;
   text-align: center;
   &--center {
