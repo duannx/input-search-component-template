@@ -32,15 +32,14 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
       setResult(response);
       setState('success');
     } catch (err) {
-      console.log("Err", err);
-    } finally {
       setState('error');
+      console.log("Err", err);
     }
   }, 1000)
 
   const handleFetchData = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     setText(event.target.value);
-    await onFetch(event.target.value);
+    onFetch(event.target.value);
   }, [])
 
   const handleSelectItem = useCallback((item: string) => {
