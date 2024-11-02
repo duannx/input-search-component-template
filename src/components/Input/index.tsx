@@ -45,6 +45,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
   const handleSelectItem = useCallback((item: string) => {
     setText(item);
     onSelectItem(item)
+    setResult([]);
   }, [])
 
   // Your code start here
