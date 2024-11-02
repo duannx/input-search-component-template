@@ -40,7 +40,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
 
   const handleFetchData = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     setText(event.target.value);
-    await onFetch(event.target.value);
+    onFetch(event.target.value);
   }, [])
 
   const handleSelectItem = useCallback((item: string) => {
