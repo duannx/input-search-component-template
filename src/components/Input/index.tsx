@@ -19,7 +19,7 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
 
   const [text, setText] = useState<string>('')
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [state, setState] = useState<string>('success');
 
   const onFetch = debounce(async (input: string) => {
     try {
@@ -27,13 +27,14 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
         setResult([]);
         return;
       }
-      setIsLoading(true);
+      setState('loading');
       const response = await fetchData(input);
       setResult(response);
+      setState('success');
     } catch (err) {
       console.log("Err", err);
     } finally {
-      setIsLoading(false);
+      setState('error');
     }
   }, 1000)
 
@@ -53,12 +54,13 @@ const Input = ({ placeholder, onSelectItem }: InputProps) => {
     <div>
       <input value={text} onChange={handleFetchData} placeholder={placeholder}></input>
       {
-        isLoading && (
+        state === 'loading' && (
           <Loader />
         )
       }
       {
-        result &&
+        state === 'success' &&
+        result && result.length > 0 &&
         result.map((item, index) => {
           return (
             <div key={index} onClick={() => handleSelectItem(item)}>
